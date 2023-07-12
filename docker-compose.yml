@@ -28,7 +28,6 @@ services:
     networks:
       - app-network
 
-
   #Nginx Service
   webserver:
     image: nginx:alpine
