@@ -20,6 +20,15 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+    command: "redis-server --appendonly yes"
+    networks:
+      - app-network
+
+
   #Nginx Service
   webserver:
     image: nginx:alpine

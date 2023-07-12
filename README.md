@@ -6,6 +6,7 @@ Do the following to start from a clean slate
 docker system prune -a
 docker volume prune
 rm -rf vendor
+rm -rf public/storage
 ```
 
 Then follow these commands to get it up and running
@@ -42,6 +43,7 @@ docker-compose exec app php artisan config:cache
 docker-compose exec app php artisan storage:link
 docker-compose exec app php artisan migrate --force
 docker-compose exec app php artisan horizon:install
+docker-compose exec app php artisan horizon:publish
 docker-compose exec app php artisan horizon
 ```
 
