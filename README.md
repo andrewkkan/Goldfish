@@ -44,7 +44,6 @@ docker-compose exec app php artisan storage:link
 docker-compose exec app php artisan migrate --force
 docker-compose exec app php artisan horizon:install
 docker-compose exec app php artisan horizon:publish
-docker-compose exec app php artisan horizon
 ```
 
 
