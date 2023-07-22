@@ -51,7 +51,8 @@ Now, point your browser to http://localhost to see the app running!
 ## Reminders:
 
 * Check and make sure "USER www" is in the Dockerfile.  USER may have changed during development but it needs to be "www" for the deployed container to remain secure.  
-
+* To adjust max video upload size and other video upload parameters on the app, see here: ./app/Http/Controllers/PostController.php 
+* To adjust max upload size on the nginx server, see here: ./nginx/conf.d/app.conf
 
 ## Changes needed from the tutorial (already done in this repo)
 ### Dockerfile:
