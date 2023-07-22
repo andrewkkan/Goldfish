@@ -46,6 +46,12 @@ docker-compose exec app php artisan horizon:install
 docker-compose exec app php artisan horizon:publish
 ```
 
+Now, point your browser to http://localhost to see the app running!
+
+## Reminders:
+
+* Check and make sure "USER www" is in the Dockerfile.  USER may have changed during development but it needs to be "www" for the deployed container to remain secure.  
+
 
 ## Changes needed from the tutorial (already done in this repo)
 ### Dockerfile:

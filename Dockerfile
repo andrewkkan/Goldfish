@@ -24,7 +24,8 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     apt-transport-https \
     lsb-release \
-    ca-certificates
+    ca-certificates \
+    ffmpeg
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -65,7 +66,7 @@ RUN useradd -u 1000 -ms /bin/bash -g www www
 COPY --chown=www:www . /var/www
 
 # Change current user to www
-USER www
+# USER www
 
 # Final touches for php
 # RUN php artisan key:generate
