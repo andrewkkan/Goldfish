@@ -2,7 +2,7 @@
     <div>
         <div class="px-4 mx-auto max-w-screen-xl py-10 lg:px-6">
             <div v-if="posts !== null">
-                <div v-for="post in posts.data" :key="post.id" class="mx-auto max-w-screen-sm max-h-fit lg:mb-16 mb-8">
+                <div v-for="post in allPosts" :key="post.id" class="mx-auto max-w-screen-sm max-h-fit lg:mb-16 mb-8">
 
                     <div class="card card-compact dark:bg-gray-800 bg-white dark:text-white text-gray-900">
 
@@ -132,14 +132,19 @@
                         </div>
                     </div>
                 </div>
+                <span ref="loadMoreIntersect"/> 
             </div>
         </div>
     </div>
 </template>
-<script setup>
-import { useForm } from '@inertiajs/inertia-vue3'
-import HLSCore from '@cloudgeek/playcore-hls';
 
+
+<script setup>
+import { useForm, usePage } from '@inertiajs/inertia-vue3';
+import { ref } from 'vue';
+import HLSCore from '@cloudgeek/playcore-hls';
+import { Inertia } from '@inertiajs/inertia'
+import { useIntersectionObserver } from '@vueuse/core'
 
 const form = useForm();
 function destroy(id) {
@@ -150,7 +155,43 @@ function destroy(id) {
     }
 }
 
-let props = defineProps({
-    posts: Object,
+const props = defineProps({
+  posts: Object,
 });
+
+const page = usePage();
+
+let allPosts = ref(props.posts.data);
+let pageUrl = ref(page.url);
+const initialURL = ref(window.location.origin + pageUrl.value);
+
+const loadMorePosts = () => {
+    if (props.posts.links.next === null) {
+        return;
+    }
+    Inertia.get(props.posts.links.next, {}, {
+        preserveState: true,
+        preserveScroll: true,
+        only: ['posts'],
+        onSuccess: () => {
+            allPosts.value = [...allPosts.value, ...props.posts.data];
+            window.history.replaceState(null, '', initialURL.value);
+        }
+    });
+}
+
+// for the ref on the element we're observing
+const loadMoreIntersect = ref(null)
+const targetIsVisible = ref(false)
+const { stop } = useIntersectionObserver(
+    loadMoreIntersect,
+    ([{ isIntersecting }], observerElement) => {
+        targetIsVisible.value = isIntersecting;
+        if (isIntersecting) {
+          stop();
+          loadMorePosts();
+        }
+    }
+)
+
 </script>
