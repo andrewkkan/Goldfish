@@ -7,7 +7,12 @@
 ### Setup Instructions
 
 The dream is to have a single command to run the entire project, but for now, we have to do a few things manually.  Let me know if any of you have any ideas on how to improve this.
-Assuming you have Docker installed, run the following commands:
+
+First, copy .env.example to .env and edit .env or just leave it the way it is:  
+```
+cp .env.example .env
+```
+Then, assuming you have Docker installed, run the following commands:
 
 ```
 docker run --rm -v $(pwd):/app composer:2.4.3 install --ignore-platform-req=ext-pcntl  # This will install composer dependencies in the vendor folder, with the correct php version.
