@@ -7,14 +7,14 @@
                     <div class="card card-compact dark:bg-gray-800 bg-white dark:text-white text-gray-900">
 
                         <div v-if="post.hlsready === null">
-                            <vue-plyr :options="options">
+                            <vue-plyr :options="options" ref="video_ref">
                                 <video controls crossorigin playsinline>
                                     <source size="720" :src="post.video" type="video/mp4" />
                                 </video>
                             </vue-plyr>
                         </div>
                         <div v-else>
-                            <vue3-video-player :core="HLSCore" :src="post.hls">
+                            <vue3-video-player :core="HLSCore" :src="post.hls" ref="video_ref">
                             </vue3-video-player>
                         </div>
 
@@ -132,7 +132,7 @@
                         </div>
                     </div>
                 </div>
-                <span ref="loadMoreIntersect"/> 
+                <span ref="paginator_ref"/> 
             </div>
         </div>
     </div>
@@ -181,17 +181,28 @@ const loadMorePosts = () => {
 }
 
 // for the ref on the element we're observing
-const loadMoreIntersect = ref(null)
-const targetIsVisible = ref(false)
-const { stop } = useIntersectionObserver(
-    loadMoreIntersect,
+const paginator_ref = ref(null);
+const { stop_paginate } = useIntersectionObserver(
+    paginator_ref,
     ([{ isIntersecting }], observerElement) => {
-        targetIsVisible.value = isIntersecting;
         if (isIntersecting) {
-          stop();
-          loadMorePosts();
+            loadMorePosts();
         }
     }
-)
+);
 
+const video_ref = ref([]);
+const { stop_video } = useIntersectionObserver(
+    video_ref,
+    ([{ isIntersecting }], observerElement) => {
+        if (isIntersecting) {
+            video_ref.value.forEach((vid, index) => {
+                vid.player.pause(); // https://github.com/sampotts/plyr#methods    
+            });
+        } 
+    },
+    {
+        threshold: 1.0
+    }
+);
 </script>
