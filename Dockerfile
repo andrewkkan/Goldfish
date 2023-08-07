@@ -51,11 +51,9 @@ RUN apt-get install -y npm
 RUN apt-get install -y vite
 
 # https://stackoverflow.com/a/72810837
-# RUN npm install
 RUN npm install --save-dev vite laravel-vite-plugin
 RUN npm install --save-dev @vitejs/plugin-vue
 # https://github.com/NVlabs/instant-ngp/discussions/300#discussion-3909942
-# ENV QT_QPA_PLATFORM offscreen
 RUN npm run build
 
 # Add user for laravel application
@@ -66,16 +64,7 @@ RUN useradd -u 1000 -ms /bin/bash -g www www
 COPY --chown=www:www . /var/www
 
 # Change current user to www
-# USER www
-
-# Final touches for php
-# RUN php artisan key:generate
-# RUN php artisan config:cache
-# RUN php artisan storage:link
-# RUN php artisan migrate --force
-# RUN php artisan horizon:install
-# RUN php artisan horizon:publish
-# RUN php artisan horizon
+USER www
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
