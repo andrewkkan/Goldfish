@@ -50,12 +50,6 @@ RUN apt-get install -y nodejs
 RUN apt-get install -y npm
 RUN apt-get install -y vite
 
-# https://stackoverflow.com/a/72810837
-RUN npm install --save-dev vite laravel-vite-plugin
-RUN npm install --save-dev @vitejs/plugin-vue
-# https://github.com/NVlabs/instant-ngp/discussions/300#discussion-3909942
-RUN npm run build
-
 # Add user for laravel application
 RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www

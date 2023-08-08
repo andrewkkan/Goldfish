@@ -6,11 +6,11 @@
 
 ### Setup Instructions
 
-The dream is to have a single command to run the entire project, but for now, we have to do a few things manually.  Let me know if any of you have any ideas on how to improve this.
+The dream is to have a single command to run the entire project, but for now, we have to do a few things manually, and tbh it's ugly af.  Let me know if you have any ideas on how to improve this.
 
 First, copy .env.example to .env and edit .env or just leave it the way it is:  
 ```
-cp .env.example .env
+cp .env.example .env # Edit .env if you want to change the default values
 ```
 Then, assuming you have Docker installed, run the following commands:
 
@@ -42,6 +42,8 @@ exit
 
 Onto the final stretch of setup, do the following
 ```
+docker-compose exec app npm install
+docker-compose exec app npm run build
 docker-compose exec app php artisan key:generate
 docker-compose exec app php artisan config:cache
 docker-compose exec app php artisan storage:link
