@@ -12,6 +12,9 @@ Plus we did the following:
 
 Clone this repo, then, do the following to start from a clean slate
 ```
+docker compose down
+docker rm -f $(docker ps -a -q)
+docker volume rm $(docker volume ls -q)
 docker system prune -af
 docker volume prune -f
 rm -rf vendor
