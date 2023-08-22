@@ -1,55 +1,40 @@
-## What has been done so far from the original repo
+## How we got here from the original Goldfish.Social repo:
+Followed this tutorial for dockerization:
+https://www.digitalocean.com/community/tutorials/how-to-set-up-laravel-nginx-and-mysql-with-docker-compose
 
-- [x] Dockerized the entire project to run in a containerized environment.  Just run follow the setup instructions below and you're good to go.
+Plus we did the following:
+- [x] Dockerized the entire project to run in a containerized environment.  Just run docker compose up -d and you're good to go.
 - [x] Added infinite scrolling on top of the existing Inertia pagination.
 - [x] Automatic pause of video when scrolling off the viewport.
 
+
 ### Setup Instructions
 
-The dream is to have a single command to run the entire project, but for now, we have to do a few things manually, and tbh it's ugly af.  Let me know if you have any ideas on how to improve this.
+Clone this repo, then, do the following to start from a clean slate
+```
+docker system prune -af
+docker volume prune -f
+rm -rf vendor
+rm -rf node_modules
+rm -rf public/storage
+```
 
-First, copy .env.example to .env and edit .env or just leave it the way it is:  
+Then follow these commands to get it up and running
 ```
-cp .env.example .env # Edit .env if you want to change the default values
-```
-Then, assuming you have Docker installed, run the following commands:
-
-```
-docker run --rm -v $(pwd):/app composer:2.4.3 install --ignore-platform-req=ext-pcntl  # This will install composer dependencies in the vendor folder, with the correct php version.
+copy .env.example to .env # and make edits as needed
 docker compose up -d
 ```
 
-Now create the database user
+Wait a while for the container entrypoint scripts to finish running:
 ```
-docker-compose exec db bash
-```
-and within the interactive container shell, run the following commands
-```
-mysql -u root -p
-# Enter password (root)
-```
-Within the mysql shell, run the following commands
-```
-show databases;
-GRANT ALL ON laravel.* TO 'laraveluser'@'%' IDENTIFIED BY 'your_laravel_db_password';
-FLUSH PRIVILEGES;
-EXIT;
-```
-Now exit the interactive container shell
-```
-exit
+docker compose logs -f
 ```
 
-Onto the final stretch of setup, do the following
+Once you see the following in the logs, you can exit the logs with ctrl-c, and continue:
 ```
-docker-compose exec app npm install
-docker-compose exec app npm run build
-docker-compose exec app php artisan key:generate
-docker-compose exec app php artisan config:cache
-docker-compose exec app php artisan storage:link
-docker-compose exec app php artisan migrate --force
-docker-compose exec app php artisan horizon:install
-docker-compose exec app php artisan horizon:publish
+......
+app              | [22-Aug-2023 17:16:38] NOTICE: fpm is running, pid 177
+app              | [22-Aug-2023 17:16:38] NOTICE: ready to handle connections
 ```
 
 Now, point your browser to http://localhost to see the app running!

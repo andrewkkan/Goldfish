@@ -1,7 +1,18 @@
 version: '3'
 services:
   
-  #PHP Service
+  composer:
+    image: composer:2.4.3
+    container_name: composer
+    restart: no
+    tty: true
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+    entrypoint: composer install --ignore-platform-req=ext-pcntl
+    working_dir: /app
+
   app:
     build:
       context: .
@@ -17,8 +28,24 @@ services:
     volumes:
       - ./:/var/www
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    entrypoint: 
+      - /bin/sh
+      - -c
+      - |
+        npm install 
+        npm run build
+        php artisan key:generate
+        php artisan config:cache
+        php artisan storage:link
+        php artisan migrate --force
+        php artisan horizon:install
+        php artisan horizon:publish
+        docker-php-entrypoint php-fpm
     networks:
       - app-network
+    depends_on:
+      - composer
+      - db
 
   redis:
     image: redis:6
@@ -67,6 +94,7 @@ services:
     volumes:
       - dbdata:/var/lib/mysql/
       - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql 
     networks:
       - app-network
 
